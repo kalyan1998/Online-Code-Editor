@@ -1,0 +1,319 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cpp
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: java
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nodejs
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: python
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ruby
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpp-executor
+  namespace: cpp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpp-executor
+  template:
+    metadata:
+      labels:
+        app: cpp-executor
+    spec:
+      containers:
+      - name: cpp-executor
+        image: kalyanshiva/cpp-executor:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "my-cluster-kafka-bootstrap.kafka:9092"
+        - name: MONGO_URI
+          value: "mongodb://OCE:Shravani@127.0.0.1:27017/admin?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin&appName=mongosh+2.2.12"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-executor
+  namespace: java
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: java-executor
+  template:
+    metadata:
+      labels:
+        app: java-executor
+    spec:
+      containers:
+      - name: java-executor
+        image: kalyanshiva/java-executor:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "my-cluster-kafka-bootstrap.kafka:9092"
+        - name: MONGO_URI
+          value: "mongodb://OCE:Shravani@127.0.0.1:27017/admin?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin&appName=mongosh+2.2.12"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-executor
+  namespace: nodejs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-executor
+  template:
+    metadata:
+      labels:
+        app: nodejs-executor
+    spec:
+      containers:
+      - name: nodejs-executor
+        image: kalyanshiva/nodejs-executor:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "my-cluster-kafka-bootstrap.kafka:9092"
+        - name: MONGO_URI
+          value: "mongodb://OCE:Shravani@127.0.0.1:27017/admin?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin&appName=mongosh+2.2.12"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-executor
+  namespace: python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-executor
+  template:
+    metadata:
+      labels:
+        app: python-executor
+    spec:
+      containers:
+      - name: python-executor
+        image: kalyanshiva/python-executor:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "my-cluster-kafka-bootstrap.kafka:9092"
+        - name: MONGO_URI
+          value: "mongodb://OCE:Shravani@127.0.0.1:27017/admin?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin&appName=mongosh+2.2.12"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ruby-executor
+  namespace: ruby
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ruby-executor
+  template:
+    metadata:
+      labels:
+        app: ruby-executor
+    spec:
+      containers:
+      - name: ruby-executor
+        image: kalyanshiva/ruby-executor:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "my-cluster-kafka-bootstrap.kafka:9092"
+        - name: MONGO_URI
+          value: "mongodb://OCE:Shravani@127.0.0.1:27017/admin?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin&appName=mongosh+2.2.12"
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: cpp-executor-hpa
+  namespace: cpp
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: cpp-executor
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: java-executor-hpa
+  namespace: java
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: java-executor
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nodejs-executor-hpa
+  namespace: nodejs
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nodejs-executor
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: python-executor-hpa
+  namespace: python
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: python-executor
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ruby-executor-hpa
+  namespace: ruby
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ruby-executor
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cpp-service
+  namespace: cpp
+spec:
+  selector:
+    app: cpp-executor
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-service
+  namespace: java
+spec:
+  selector:
+    app: java-executor
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-service
+  namespace: nodejs
+spec:
+  selector:
+    app: nodejs-executor
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-service
+  namespace: python
+spec:
+  selector:
+    app: python-executor
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ruby-service
+  namespace: ruby
+spec:
+  selector:
+    app: ruby-executor
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
